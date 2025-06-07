@@ -6,6 +6,7 @@
 #define deste_kart 24
 #define oyuncu_kart 6
 
+// fonksiyonları çağırdık
 void karistir(int dizi[], int boyut);
 void kartDagit(int deste[], int oyuncudizi[], int bilgisayarDizi[]);
 bool balikKontrol(int dizi[], int boyut, int *balikSayisi);
@@ -32,7 +33,9 @@ int main() {
   oyuncuKartSayisi = oyuncu_kart;
   bilgisayarKartSayisi = oyuncu_kart;
 
-  while (oyuncuBalikSayisi < 2 && bilgisayarBalikSayisi < 2) {
+  while (oyuncuBalikSayisi < 2 &&
+         bilgisayarBalikSayisi <
+             2) { // balık sayıları 2 den küçükse oyuna devamedilecek
     oyuncuKartSec(deste, oyuncudizi, bilgisayarDizi, &oyuncuKartSayisi,
                   &bilgisayarKartSayisi, &oyuncuBalikSayisi);
     if (oyuncuBalikSayisi >= 2) {
@@ -49,8 +52,12 @@ int main() {
   return 0;
 }
 
-void karistir(int dizi[], int boyut) {
-  for (int i = boyut - 1; i > 0; i--) {
+void karistir(
+    int dizi[],
+    int boyut) { // destenin doğru dağılması için önce karıştırmak gerekli
+  for (int i = boyut - 1; i > 0;
+       i--) { // destede rastgale j değeri oluşturaraak i ye atar böyle
+              // karıştırır
     int j = rand() % (i + 1);
     int temp = dizi[i];
     dizi[i] = dizi[j];
@@ -60,35 +67,34 @@ void karistir(int dizi[], int boyut) {
 
 void kartDagit(int deste[], int oyuncudizi[], int bilgisayarDizi[]) {
   karistir(deste, deste_kart);
-  for (int i = 0; i < oyuncu_kart; i++) {
+  for (int i = 0; i < oyuncu_kart;
+       i++) { // sırayla bir kart oyuncuya bir kart bilgisayara verilir
     oyuncudizi[i] = deste[i * 2];
     bilgisayarDizi[i] = deste[i * 2 + 1];
-    deste[i * 2] = deste[i * 2 + 1] = 0;
+    deste[i * 2] = deste[i * 2 + 1] =
+        0; // dağıtılan kaartlardan kurtulamk için 0 atadık
   }
   printf("oyuncunun kartları:\n ");
   for (int i = 0; i < oyuncu_kart; i++) {
     printf("%d ", oyuncudizi[i]);
   }
-  printf("bilgisayarın kartları:\n  "); // gizli olacak bura
-  for (int i = 0; i < oyuncu_kart; i++) {
-    printf("%d ", bilgisayarDizi[i]);
-  }
+  printf("bilgisayarın kartları: [Gizli]\n  ");
   printf("masadaki kartlar:\n");
-  for (int i = oyuncu_kart * 2; i < deste_kart; i++) {
-    printf("%d ", deste[i]);
-  }
   printf("\n");
 }
 
 bool balikKontrol(int dizi[], int boyut, int *balikSayisi) {
   int sayac[7] = {0};
   for (int i = 0; i < boyut; i++) {
-    if (dizi[i] != 0) {
+    if (dizi[i] !=
+        0) { // 0 dan farklı sayıları tutar  eğer farklıysa sayacı arttırır
       sayac[dizi[i]]++;
-      if (sayac[dizi[i]] == 4) {
+      if (sayac[dizi[i]] == 4) { // sayaç 4 e eşitse balık yapar
         int kartno = dizi[i];
         int newİndex = 0;
-        for (int k = 0; k < boyut; k++) {
+        for (int k = 0; k < boyut;
+             k++) { // balık yapan kartı kartno ya attık ve 0 atadık ki desteden
+                    // çıkarma yapalım
           if (dizi[k] != kartno) {
             dizi[newİndex++] = dizi[k];
           }
@@ -105,7 +111,8 @@ bool balikKontrol(int dizi[], int boyut, int *balikSayisi) {
 }
 
 void masadanKartCek(int deste[], int hedefDizi[], int *hedefKartSayisi) {
-  for (int i = 0; i < deste_kart; i++) {
+  for (int i = 0; i < deste_kart;
+       i++) { // masadaki kart 0 değilse verilir ve seçilen kartı 0 yapar
     if (deste[i] != 0) {
       hedefDizi[(*hedefKartSayisi)++] = deste[i];
       deste[i] = 0;
@@ -130,20 +137,26 @@ void oyuncuKartSec(int deste[], int oyuncudizi[], int bilgisayarDizi[],
   scanf("%d", &secim);
 
   bool kartVar = false;
+  bool kartvar1 = false;
   int alinanKartSayisi = 0;
-  for (int i = 0; i < *bilgisayarKartSayisi; i++) {
+  for (int i = 0; i < *bilgisayarKartSayisi;
+       i++) { // oyuncunu istediği kart bilgisayara var mı ona bakıılır
     if (bilgisayarDizi[i] == secim) {
       kartVar = true;
-      oyuncudizi[(*oyuncuKartSayisi)++] = secim;
+      oyuncudizi[(*oyuncuKartSayisi)++] =
+          secim; // oyunuc kartı arttırılır bilgisayarın ki de azaltılır
       bilgisayarDizi[i] = 0;
       alinanKartSayisi++;
     }
   }
   if (kartVar) {
+    kartvar1 = true;
     printf("%d adet %d kartı alındı.\n", alinanKartSayisi, secim);
 
     int yeniİindex = 0;
-    for (int i = 0; i < *bilgisayarKartSayisi; i++) {
+    for (int i = 0; i < *bilgisayarKartSayisi;
+         i++) { // bilgisayardan alına kartları 0 yapmıştık onları almaz ve yeni
+                // dizi yaptık
       if (bilgisayarDizi[i] != 0) {
         bilgisayarDizi[yeniİindex++] = bilgisayarDizi[i];
       }
@@ -153,7 +166,18 @@ void oyuncuKartSec(int deste[], int oyuncudizi[], int bilgisayarDizi[],
     if (balikKontrol(oyuncudizi, *oyuncuKartSayisi, oyuncuBalikSayisi)) {
       printf("oyuncu balık yaptı %d\n", *oyuncuBalikSayisi);
       *oyuncuKartSayisi -= 4;
+      if (kartvar1) {
+        printf("oyuncu tekrar hamle yapıyor");// eğer kart varsa tekrar hamle yapomasını sağlıyoruz
+        oyuncuKartSec(deste, oyuncudizi, bilgisayarDizi, oyuncuKartSayisi,
+                      bilgisayarKartSayisi, oyuncuBalikSayisi);
+      }
     }
+    if (kartvar1) {
+      printf("oyuncu tekrar hamle yapıyor");
+      oyuncuKartSec(deste, oyuncudizi, bilgisayarDizi, oyuncuKartSayisi,
+                    bilgisayarKartSayisi, oyuncuBalikSayisi);
+    }
+
   } else {
     printf("Bilgisayarda %d kartı yok. Masadan kart çekiyorsunuz.\n", secim);
     masadanKartCek(deste, oyuncudizi, oyuncuKartSayisi);
@@ -173,46 +197,68 @@ void bilgisayarKartSec(int deste[], int oyuncudizi[], int bilgisayarDizi[],
   }
   int secim = 0;
   int maxSayi = 0;
-  for (int i = 1; i <= 6; i++) {
+  for (int i = 1; i <= 6; i++) { // bilgisayarınkartlarına bakar en çok hangi
+                                 // karttan varesa onu seçer
     if (sayac[i] > maxSayi) {
       maxSayi = sayac[i];
       secim = i;
     }
   }
   if (maxSayi <= 1) {
-    secim = bilgisayarDizi[rand() % (*bilgisayarKartSayisi)];
+    secim = bilgisayarDizi
+        [rand() % (*bilgisayarKartSayisi)]; // eğer kart sayıları 1 ve daha
+                                            // küçükse rastgele bir kart seçer
   }
   printf("bilgisayar %d kartını sordu\n", secim);
   bool kartVar = false;
+  bool kartvar1 = false;
   int alinanKartSayisi = 0;
 
-  for (int i = 0; i < *oyuncuKartSayisi; i++) {
+  for (int i = 0; i < *oyuncuKartSayisi;
+       i++) { // bilgisayarın istediği kart oyuncuda var mı ona bakılır
     if (oyuncudizi[i] == secim) {
       kartVar = true;
-      bilgisayarDizi[(*bilgisayarKartSayisi)++] = secim;
+      bilgisayarDizi[(*bilgisayarKartSayisi)++] =
+          secim; // kart varsa bilgisayarın kart sayısı arttırılır oyuncunun
+                 // azaltılır 0 yapılır
       oyuncudizi[i] = 0;
       alinanKartSayisi++;
     }
   }
   if (kartVar) {
+    kartvar1 = true;
     printf("%d adet %d kartı alındı.\n", alinanKartSayisi, secim);
     int yeniİndex = 0;
-    for (int i = 0; i < *oyuncuKartSayisi; i++) {
+    for (int i = 0; i < *oyuncuKartSayisi;
+         i++) { // oyuncudan alınan kartları 0 yapmıştık onları almaz ve yeni
+                // dizi yaptık
       if (oyuncudizi[i] != 0) {
         oyuncudizi[yeniİndex++] = oyuncudizi[i];
       }
     }
     *oyuncuKartSayisi = yeniİndex;
-    if (balikKontrol(bilgisayarDizi, *bilgisayarKartSayisi,
-                     bilgisayarBalikSayisi)) {
+    if (balikKontrol(
+            bilgisayarDizi,
+            *bilgisayarKartSayisi, // balık kontrolü yapılır balık varsa
+                                   // bilgisayarın kart sayısı azaltılır
+            bilgisayarBalikSayisi)) {
       printf("bilgisayar balık yaptı %d\n", *bilgisayarBalikSayisi);
       *bilgisayarKartSayisi -= 4;
+      if (kartvar1) {// eğer kart varsa tekrar hamle yapomasını sağlıyoruz
+        printf("bilgisayar tekrar hamle yapıyor");
+        bilgisayarKartSec(deste, oyuncudizi, bilgisayarDizi, oyuncuKartSayisi,
+                          bilgisayarBalikSayisi, bilgisayarKartSayisi);
+      }
+    }
+    if (kartvar1) {
+      printf("bilgisayar tekrar hamle yapıyor");
+      bilgisayarKartSec(deste, oyuncudizi, bilgisayarDizi, oyuncuKartSayisi,
+                        bilgisayarBalikSayisi, bilgisayarKartSayisi);
     }
   } else {
     printf("Sizde %d kartı yok. Bilgisayar masadan kart çekiyor.\n", secim);
     masadanKartCek(deste, bilgisayarDizi, bilgisayarKartSayisi);
 
-    // Balık kontrolü
     if (balikKontrol(bilgisayarDizi, *bilgisayarKartSayisi,
                      bilgisayarBalikSayisi)) {
       printf("BILGISAYAR BALIK YAPTI! Bilgisayarın balık sayısı: %d\n",
